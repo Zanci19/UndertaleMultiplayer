@@ -1,0 +1,12 @@
+{
+  "enemies": {
+    "sans": {
+      "displayName": "Sans",
+      "encounterTexts": [
+        "* Sans blocks your path.",
+        "* Sans appears.",
+        "* Sans is here."
+      ]
+    }
+  }
+}
