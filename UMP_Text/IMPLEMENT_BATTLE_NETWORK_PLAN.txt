@@ -1,0 +1,263 @@
+UNDERTALE MULTIPLAYER - CLICKTEAM FUSION 2.5 IMPLEMENTATION GUIDE
+(Designed to match UMP_Text export style and Lacewing Blue workflow)
+
+=================================================================
+1) WHAT EXISTS ALREADY (DO NOT DELETE)
+=================================================================
+- Frame 4 (NameSet): Connects Lacewing Blue Client and joins channel UMP_1.
+- Frame 6 (Room):
+  - Creates local Player and remote NetPlayer objects.
+  - Sends local XY as blasted binary on subchannel 0.
+  - Receives peers' XY and updates NetPlayer.
+  - Supports challenge flow:
+    CHALLENGE (subchannel 1) -> ACCEPT (subchannel 2) / DENY (subchannel 3).
+- Frame 7 (Fight):
+  - Typewriter text, menu navigation, fight UI/animation foundations.
+  - JSON already loaded from EnemyJSON and basic strings displayed.
+
+This guide extends existing logic to synchronized 2-player turn-based combat.
+
+=================================================================
+2) ADD GLOBAL VALUES / STRINGS (Special object)
+=================================================================
+Add these global values/strings (or reuse equivalents):
+- MyPeerID (already exists)
+- OpponentPeerID (already exists)
+- MatchID (already exists)
+- MyRole (already exists: challenger/challenged)
+- IsHost (already exists)
+
+NEW:
+- InBattle (0/1)
+- BattleReadyLocal (0/1)
+- BattleReadyRemote (0/1)
+- TurnOwnerPeerID (peer id whose turn it is)
+- BattleState (int enum: 0 MENU, 1 ATTACK_SELECT, 2 DEFENSE_WAVE, 3 TURN_END, 4 RESULT)
+- LocalHP
+- RemoteHP
+- LocalMercy (0/1)
+- RemoteMercy (0/1)
+- SelectedMenuIndex
+- SelectedAttackIndex
+- AttackListCount
+- CurrentWaveWidth
+- CurrentWaveHeight
+- CurrentWaveId
+- PendingSeed (random seed sent by host so both clients spawn identical patterns)
+
+Optional strings:
+- OpponentName
+- OpponentCharacter
+- LastNetworkError
+
+=================================================================
+3) NETWORK MESSAGE PROTOCOL (Lacewing Blue)
+=================================================================
+Keep CHALLENGE/ACCEPT/DENY. Add battle protocol on a new subchannel (recommended 10).
+
+Text packet format (pipe-delimited):
+- BATTLE_INIT|matchId|hostPeerId|challengerName|challengedName
+- READY|matchId|peerId
+- TURN|matchId|turnOwnerPeerId|battleState
+- MENU|matchId|peerId|menuIndex
+- ATTACK_LIST|matchId|count|attack0,attack1,attack2
+- ATTACK_PICK|matchId|peerId|attackIndex|waveId|width|height|seed
+- WAVE_HIT|matchId|defenderPeerId|damage|hpLeft
+- MERCY|matchId|peerId|value
+- RESULT|matchId|winnerPeerId|reason
+- SYNC_HP|matchId|peerId|localHP|remoteHP
+- CANCEL|matchId|reason
+
+Rules:
+- Host (IsHost=1) is authoritative for turn transitions and tie-breaking.
+- Non-host mirrors host decisions and only requests actions.
+- Ignore any packet where matchId != current MatchID.
+
+=================================================================
+4) FRAME 6 (ROOM) CHANGES
+=================================================================
+[ Challenge ]
+
+A) Fix ACCEPT packet mismatch
+Current code sends ACCEPT with local MatchID on challenged client, but challenged side never parsed/stored incoming match id.
+When CHALLENGE arrives:
+- Parse incoming text tokens.
+- Set MatchID from token[1] instead of local recomputation.
+- Set OpponentName/OpponentCharacter from packet.
+
+B) Move to Fight only after BATTLE_INIT ack
+Recommended flow:
+1. Challenger sends CHALLENGE.
+2. Challenged sends ACCEPT with same matchId.
+3. Challenger receives ACCEPT and sends BATTLE_INIT on subchannel 10.
+4. Both sides set InBattle=1 and Jump to Frame 7.
+
+C) Add timeout / cancel
+- If challenger waits > N seconds without ACCEPT, reset MyRole and show timeout text.
+- If peer disconnects during pending challenge, clear state.
+
+=================================================================
+5) FRAME 7 (FIGHT) - STARTUP HANDSHAKE
+=================================================================
+Create new group [ NetSync ] in Frame 7 Events:
+
+[ NetSync ]
+	* Start of Frame
+		Special : Set InBattle to 1
+		Special : Set BattleReadyLocal to 0
+		Special : Set BattleReadyRemote to 0
+		Special : Set LocalMercy to 0
+		Special : Set RemoteMercy to 0
+		Special : Set BattleState to 0
+		Special : Set LocalHP to 92
+		Special : Set RemoteHP to 92
+		Lacewing Blue Client : Send text "READY|" + Str$(MatchID) + "|" + Str$(MyPeerID) to peer on subchannel 10
+		Special : Set BattleReadyLocal to 1
+
+	* Lacewing Blue Client : On text message from peer on subchannel 10 (sent)
+	+ Left$(ReceivedText$( "Lacewing Blue Client" ), 6) = "READY|"
+		Special : Set BattleReadyRemote to 1
+
+	* BattleReadyLocal = 1
+	+ BattleReadyRemote = 1
+	+ Only one action when event loops
+		(Host) decide first turn = OpponentPeerID (as requested: opponent attacks first)
+		Special : Set TurnOwnerPeerID to OpponentPeerID
+		Special : Set BattleState to 0
+		Lacewing Blue Client : Send TURN packet on subchannel 10
+
+Also add packet parser utility (String Parser 2 or simple token extraction) for all network packets.
+
+=================================================================
+6) TURN OWNERSHIP + SHARED MENU HIGHLIGHT
+=================================================================
+Goal: both clients always see same highlighted option, but only active player can move.
+
+Implementation:
+- Compute IsMyTurn = (TurnOwnerPeerID = MyPeerID).
+
+Modify existing [ MyTurn ] navigation conditions:
+- Add condition IsMyTurn = 1 before accepting Left/Right/Z/Enter input.
+- On local highlight change, send:
+  MENU|matchId|myPeerId|selectIndex
+- On receiving MENU packet, force SelectMenu to received index (for spectator view).
+
+Important:
+- Keep animation forcing logic for Fight/Act/Item/Mercy on BOTH clients.
+- Only gate the INPUT, not the VISUAL update.
+
+=================================================================
+7) ATTACK LIST FROM JSON (ATTACKER SIDE), VISIBLE TO BOTH
+=================================================================
+When battle state enters ATTACK_SELECT for active attacker:
+1. Attacker reads attacks from JSON (enemy.json or player-specific json structure).
+2. Build compact packet:
+   ATTACK_LIST|matchId|count|name1,name2,name3
+3. Send to defender.
+4. Defender renders the same list read from packet (no local authority).
+
+Recommendation for JSON format (if extending current file):
+{
+  "players": {
+    "sans": {
+      "attacks": [
+        {"name":"Bone Rain","waveId":"bone_rain","width":500,"height":220,"baseDamage":6},
+        {"name":"Gaster Blaster","waveId":"blaster","width":600,"height":260,"baseDamage":9}
+      ]
+    }
+  }
+}
+
+=================================================================
+8) ATTACK PICK -> BOX RESIZE -> DEFENDER HEART CONTROL
+=================================================================
+On attacker confirm ATTACK:
+- Read selected attack entry from JSON.
+- Send ATTACK_PICK packet with waveId, width, height, seed.
+- Set BattleState=2 (DEFENSE_WAVE) on both sides.
+
+On both clients when ATTACK_PICK received:
+- Animate white-line battle box to target width/height (same easing duration both sides).
+- Spawn/prepare projectile pattern based on waveId + seed.
+- Enable heart control ONLY for defender (peer id opposite of attacker in this turn).
+
+Pseudo-conditions:
+- If MyPeerID = defenderPeerId => CanControlSoul = 1
+- Else CanControlSoul = 0
+
+When wave ends:
+- Defender computes hits received OR host computes authoritative damage.
+- Send WAVE_HIT / SYNC_HP.
+- Update both health bars.
+- Host sends TURN packet switching TurnOwnerPeerID.
+
+=================================================================
+9) MERCY LOGIC (BOTH MUST MERCY)
+=================================================================
+When local player confirms MERCY:
+- Set LocalMercy=1
+- Send MERCY|matchId|myPeerId|1
+
+On MERCY receive:
+- Set RemoteMercy accordingly.
+
+End condition:
+- If LocalMercy=1 AND RemoteMercy=1 -> RESULT reason="MERCY_BOTH", no winner.
+
+If one HP <= 0:
+- RESULT winnerPeerId = surviving peer, reason="HP_ZERO".
+
+=================================================================
+10) IMPORTANT FIXES FOR CURRENT EXPORT
+=================================================================
+1. In Frame 6, challenge distance check currently uses any NetPlayer. If multiple peers exist, select nearest or explicitly selected target.
+2. In Frame 6, incoming CHALLENGE should parse and store matchId from text.
+3. In Frame 7, ensure all existing local-only menu events are gated by IsMyTurn.
+4. Add anti-desync:
+   - Host sends SYNC_HP every turn end.
+   - Clients ignore stale packets by matchId and optional turn counter.
+5. On disconnect in battle:
+   - Send/handle CANCEL and return to Room/Menu safely.
+
+=================================================================
+11) SUGGESTED EVENT GROUP LAYOUT (Frame 7)
+=================================================================
+[ NetSync ]
+[ PacketParse ]
+[ TurnControl ]
+[ SharedMenuVisual ]
+[ LocalInputMyTurnOnly ]
+[ AttackListSync ]
+[ AttackResolve ]
+[ MercyAndResult ]
+[ DesyncRecovery ]
+
+Keep your current groups ([ Load ], [ Battle ], [ TypewriterText ], etc.) and insert new groups below them.
+
+=================================================================
+12) TEST CHECKLIST
+=================================================================
+Run these manual tests with 2 clients:
+1. Both join room; movement replication works.
+2. Challenger presses Z near opponent -> opponent gets prompt.
+3. Opponent accepts -> both enter Fight on same MatchID.
+4. Opponent (first turn) can move menu; challenger sees highlight but cannot move it.
+5. Attack list appears on both clients from attacker selection flow.
+6. Attack pick resizes white box identically for both clients.
+7. Defender heart can move; attacker heart cannot.
+8. Damage/HP synchronized after wave.
+9. Turn swaps and repeats.
+10. Both MERCY -> battle ends peacefully.
+11. One disconnects mid-battle -> other returns safely.
+
+=================================================================
+13) IMPLEMENTATION ORDER (RECOMMENDED)
+=================================================================
+Step 1: Fix Frame 6 challenge/accept matchId parsing.
+Step 2: Add Frame 7 READY/TURN handshake.
+Step 3: Gate menu input by turn and sync MENU highlight.
+Step 4: Sync ATTACK_LIST and ATTACK_PICK.
+Step 5: Implement DEFENSE_WAVE ownership (defender controls soul).
+Step 6: Add HP sync + win/mercy resolution.
+Step 7: Add disconnect/cancel/desync recovery.
+
