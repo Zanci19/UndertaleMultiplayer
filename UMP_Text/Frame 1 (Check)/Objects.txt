@@ -1,0 +1,27 @@
++ Object Definitions
+	+ String
+		- Type: String
+		+ Texts
+			1: Fetching data from servers...
+	+ Get Object
+		- Type: Get Object
+	+ String 2
+		- Type: String
+		+ Texts
+			1: Text
+	+ JSON Object
+		- Type: JSON Object
+	+ Internet Connection Operations
+		- Type: Internet Connection Operations
+	+ String 3
+		- Type: String
+		+ Texts
+			1: When you are connected, press Z or ENTER.
++ Layer #1
+	- String 2 [0, 0]
++ Layer #2
+	- String [0, 388]
+	- String 3 [0, 768]
+	- Get Object [0, -32]
+	- JSON Object [32, -32]
+	- Internet Connection Operations [64, -32]

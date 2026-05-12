@@ -1,0 +1,65 @@
+* Upon pressing "Left Arrow"
++ SelectedOption of Active 2 = 1
+  OR (logical)
+* Upon pressing "Right Arrow"
++ SelectedOption of Active 2 = 1
+	Active 2 : Set SelectedOption to 3
+	 StringQuit : Set font color to RGB(255,255,0)
+	 Active 2 : Set WasOnPlayButton off
+	 StringSettings : Set font color to RGB(255,255,255)
+	 StringPlay : Set font color to RGB(255,255,255)
+
+* Upon pressing "Left Arrow"
++ SelectedOption of Active 2 = 3
+  OR (logical)
+* Upon pressing "Right Arrow"
++ SelectedOption of Active 2 = 3
+	Active 2 : Set SelectedOption to 1
+	 StringPlay : Set font color to RGB(255,255,0)
+	 Active 2 : Set WasOnPlayButton on
+	 StringSettings : Set font color to RGB(255,255,255)
+	 StringQuit : Set font color to RGB(255,255,255)
+
+* Upon pressing "Down Arrow"
++ SelectedOption of Active 2 = 1
+	Active 2 : Set SelectedOption to 2
+	 StringSettings : Set font color to RGB(255,255,0)
+	 StringPlay : Set font color to RGB(255,255,255)
+	 StringQuit : Set font color to RGB(255,255,255)
+
+* Upon pressing "Up Arrow"
++ SelectedOption of Active 2 = 2
++ Active 2: WasOnPlayButton is on
+  OR (logical)
+* Upon pressing "Down Arrow"
++ SelectedOption of Active 2 = 2
++ Active 2: WasOnPlayButton is on
+	Active 2 : Set SelectedOption to 1
+	 StringPlay : Set font color to RGB(255,255,0)
+	 StringSettings : Set font color to RGB(255,255,255)
+	 StringQuit : Set font color to RGB(255,255,255)
+
+* Upon pressing "Up Arrow"
++ SelectedOption of Active 2 = 2
++ Active 2: WasOnPlayButton is off
+  OR (logical)
+* Upon pressing "Down Arrow"
++ SelectedOption of Active 2 = 2
++ Active 2: WasOnPlayButton is off
+	Active 2 : Set SelectedOption to 3
+	 StringQuit : Set font color to RGB(255,255,0)
+	 StringSettings : Set font color to RGB(255,255,255)
+	 StringPlay : Set font color to RGB(255,255,255)
+
+[ EnterKeyLock ]
+
+	* Active 2: KeyboardLock is on
+	+ NOT Repeat while "Enter" is pressed
+	+ NOT Repeat while "Z" is pressed
+	+ NOT Repeat while "Shift" is pressed
+	+ NOT Repeat while "Backspace" is pressed
+	+ NOT Repeat while "Up Arrow" is pressed
+	+ NOT Repeat while "Down Arrow" is pressed
+	+ Only one action when event loops
+		 Active 2 : Set KeyboardLock off
+

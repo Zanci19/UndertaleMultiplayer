@@ -1,0 +1,21 @@
++ Global Values
+	MyPeerID: 0
+	OpponentPeerID: 0
+	MatchID: 0
+	IsHost: 0
+	IsFullscreen: 0
+	MusicVolume: 0
+	SFXVolume: 0
+	IntroSoundEffect: 0
+	VSync: 0
++ Global Strings
+	PlayerJSON: 
+	EnemyJSON: 
+	MyName: Zan
+	RoomName: 
+	RoomCode: 
+	OpponentName: 
+	MyCharacter: 
+	OpponentCharacter: 
+	MyRole: 
+	BattleEnemyID: 

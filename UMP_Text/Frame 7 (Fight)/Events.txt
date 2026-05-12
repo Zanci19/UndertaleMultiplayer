@@ -1,0 +1,815 @@
+[ Load ]
+
+	* Start of Frame
+		 Font Embed Object : Embed Font
+		 Main : Set font name to "Fixedsys Excelsior 3.01"
+		Weapon : Stop animation
+		Weapon : Make invisible
+		Active 2 : Make invisible
+		Active 2 : Stop animation
+		Active 2 : Set ImpactAnim to 0
+		Active 2 : Set ImpactTimer to 0
+		 Active 2 : Set scale to 1.0 (Quality = 0)
+		Bar 2 : Stop animation
+		Bar 2 : Make invisible
+		Bar 2 : Set StopAnim to 0
+		Bar 2 : Set StopTimer to 0
+		 Bar 2 : Set scale to 1.0 (Quality = 0)
+		 Bar 2 : Set alpha-blending coefficient to 0
+		Bar 2 : Set Hit to 0
+		Bar 3 : Stop animation
+		Bar 3 : Make invisible
+		Bar 3 : Set Hit to 0
+		Bar 4 : Stop animation
+		Bar 4 : Make invisible
+		Bar 4 : Set Hit to 0
+		Bar : Stop animation
+		Bar : Make invisible
+		Bar : Set StopAnim to 0
+		Bar : Set StopTimer to 0
+		 Bar : Set scale to 1.0 (Quality = 0)
+		 Bar : Set alpha-blending coefficient to 0
+		Bar : Set Hit to 0
+		Opponent : Set BaseX to X( "Opponent" )
+
+	* Start of Frame
+		 JSON Object : Load (EnemyJSON) with flags (0)
+		 JSON Object : Enter Object named ("enemies")
+		 JSON Object : Enter Object named ("sans")
+		FightSelect1 : Set alterable string to "* " + ObjSubStringValue$( "JSON Object", "displayName" )
+		 JSON Object : Enter Object named ("encounterTexts")
+		Main : Set alterable string to ""
+		 AlterableValues : Set MainText to "* " + ArrSubStringValue$( "JSON Object", RRandom(0, 2) )
+		AlterableValues : Set TypeIndex to 0
+		AlterableValues : Set Typing to 0
+
+[ Battle ]
+
+	[ Intro ]
+
+		* Start of Frame
+			Sound : Play sample snd_b
+			 Layer object : Set alpha-blending coefficient of layer 3 to 255
+
+		* Every 00''-08
+		+ snd_b is not playing
+			Soul : Add 1 to InvivilibityFrames
+
+		* InvivilibityFrames of Soul = 0
+		+ Only one action when event loops
+
+		* InvivilibityFrames of Soul = 1
+		+ Only one action when event loops
+			Soul : Make invisible
+			Sound : Play sample click
+
+		* InvivilibityFrames of Soul = 2
+		+ Only one action when event loops
+			Soul : Reappear
+
+		* InvivilibityFrames of Soul = 3
+		+ Only one action when event loops
+			Soul : Make invisible
+			Sound : Play sample click
+
+		* InvivilibityFrames of Soul = 4
+		+ Only one action when event loops
+			Soul : Reappear
+
+		* InvivilibityFrames of Soul = 5
+		+ Only one action when event loops
+			Soul : Make invisible
+			Sound : Play sample click
+
+		* InvivilibityFrames of Soul = 6
+		+ Only one action when event loops
+			Soul : Reappear
+			Sound : Play sample snd_battlefall
+			 Easing Object : Move Soul using Linear Ease-In to [125,993] over 650 milliseconds
+
+		* Easing Object: Object stopped moving: Soul
+			AlterableValues : Set FightBegin to 1
+			AlterableValues : Set SelectMenu to 1
+			AlterableValues : Set BattlePhase to 0
+			 AlterableValues : Set MyTurn on
+			 AlterableValues : Set CanChooseAttack off
+			 AlterableValues : Set CanControlSoul off
+			Main : Reappear
+			Main : Set alterable string to ""
+			AlterableValues : Set TypeIndex to 0
+			AlterableValues : Set Typing to 1
+
+		* FightBegin of AlterableValues = 1
+			 Layer object : Set alpha-blending coefficient of layer 3 to lyrGetLayerAlpha( "Layer object", 3 ) - 25
+
+	[ TypewriterText ]
+
+		* Every 00''-03
+		+ Typing of AlterableValues = 1
+		+ TypeIndex of AlterableValues < Len(MainText( "AlterableValues" ))
+			Main : Set alterable string to Left$(MainText( "AlterableValues" ), TypeIndex( "AlterableValues" ) + 1)
+			AlterableValues : Add 1 to TypeIndex
+			Sound : Play sample chatboxfight
+
+		* TypeIndex of AlterableValues >= Len(MainText( "AlterableValues" ))
+		+ Typing of AlterableValues = 1
+		+ Only one action when event loops
+			AlterableValues : Set Typing to 0
+
+		* Upon pressing "X"
+		+ Typing of AlterableValues = 1
+			Main : Set alterable string to MainText( "AlterableValues" )
+			AlterableValues : Set TypeIndex to Len(MainText( "AlterableValues" ))
+			AlterableValues : Set Typing to 0
+
+	[ EnterKeyLock ]
+
+		* KeyboardLock of AlterableValues = 1
+		+ NOT Repeat while "Enter" is pressed
+		+ NOT Repeat while "Z" is pressed
+		+ NOT Repeat while "Shift" is pressed
+		+ NOT Repeat while "Backspace" is pressed
+		+ NOT Repeat while "Up Arrow" is pressed
+		+ NOT Repeat while "Down Arrow" is pressed
+		+ Only one action when event loops
+			AlterableValues : Set KeyboardLock to 0
+
+	[ MyTurn ]
+
+		[ MenuNavigate ]
+
+			* Upon pressing "Left Arrow"
+			+ SelectMenu of AlterableValues <> 1
+			+ BattlePhase of AlterableValues = 0
+			+ FightMenu of FightButton <> 1
+			+ ActMenu of ActButton <> 1
+			+ ItemMenu of ItemButton <> 1
+			+ MercyMenu of MercyButton <> 1
+				AlterableValues : Sub 1 from SelectMenu
+				Sound : Play sample menu_select
+
+			* Upon pressing "Right Arrow"
+			+ SelectMenu of AlterableValues <> 4
+			+ BattlePhase of AlterableValues = 0
+			+ FightMenu of FightButton <> 1
+			+ ActMenu of ActButton <> 1
+			+ ItemMenu of ItemButton <> 1
+			+ MercyMenu of MercyButton <> 1
+				AlterableValues : Add 1 to SelectMenu
+				Sound : Play sample menu_select
+
+			* SelectMenu of AlterableValues = 0
+			+ BattlePhase of AlterableValues = 0
+			+ FightMenu of FightButton = 0
+			+ Only one action when event loops
+				ItemButton : Force animation frame to 0
+				MercyButton : Force animation frame to 0
+				ActButton : Force animation frame to 0
+				FightButton : Force animation frame to 0
+
+			* SelectMenu of AlterableValues = 1
+			+ BattlePhase of AlterableValues = 0
+			+ FightMenu of FightButton = 0
+			+ Only one action when event loops
+				MercyButton : Force animation frame to 0
+				ActButton : Force animation frame to 0
+				ItemButton : Force animation frame to 0
+				FightButton : Force animation frame to 1
+				Soul : Set X position to 125
+
+			* SelectMenu of AlterableValues = 2
+			+ BattlePhase of AlterableValues = 0
+			+ FightMenu of FightButton = 0
+			+ Only one action when event loops
+				MercyButton : Force animation frame to 0
+				ItemButton : Force animation frame to 0
+				FightButton : Force animation frame to 0
+				ActButton : Force animation frame to 1
+				Soul : Set X position to 610
+
+			* SelectMenu of AlterableValues = 3
+			+ BattlePhase of AlterableValues = 0
+			+ FightMenu of FightButton = 0
+			+ Only one action when event loops
+				MercyButton : Force animation frame to 0
+				ActButton : Force animation frame to 0
+				FightButton : Force animation frame to 0
+				ItemButton : Force animation frame to 1
+				Soul : Set X position to 1083
+
+			* SelectMenu of AlterableValues = 4
+			+ BattlePhase of AlterableValues = 0
+			+ FightMenu of FightButton = 0
+			+ Only one action when event loops
+				ActButton : Force animation frame to 0
+				ItemButton : Force animation frame to 0
+				FightButton : Force animation frame to 0
+				MercyButton : Force animation frame to 1
+				Soul : Set X position to 1560
+
+		[ Menu ]
+
+			[ FightSelect ]
+
+				[ BarAnim ]
+
+					* StopAnim of Bar = 1
+						Bar : Add 1 to StopTimer
+						 Bar : Set alpha-blending coefficient to ( StopTimer( "Bar" ) / 20.0 ) * 255
+						 Bar : Set scale to 1.0 + ( StopTimer( "Bar" ) / 20.0 ) (Quality = 0)
+
+					* StopAnim of Bar = 1
+					+ Only one action when event loops
+						Bar : Change animation sequence to BlueHit
+						 Bar : Set RGB coefficient to GetRGB(123, 233, 235)
+
+					* StopAnim of Bar = 1
+					+ StopTimer of Bar = 20
+					+ Only one action when event loops
+						Bar : Set StopAnim to 0
+						Bar : Make invisible
+						 Bar : Set scale to 1.0 (Quality = 0)
+						 Bar : Set alpha-blending coefficient to 0
+
+					* StopAnim of Bar 2 = 1
+						Bar 2 : Add 1 to StopTimer
+						 Bar 2 : Set alpha-blending coefficient to ( StopTimer( "Bar 2" ) / 20.0 ) * 255
+						 Bar 2 : Set scale to 1.0 + ( StopTimer( "Bar 2" ) / 20.0 ) (Quality = 0)
+
+					* StopAnim of Bar 2 = 1
+					+ Only one action when event loops
+						Bar 2 : Change animation sequence to BlueHit
+						 Bar 2 : Set RGB coefficient to GetRGB(123, 233, 235)
+
+					* StopAnim of Bar 2 = 1
+					+ StopTimer of Bar 2 = 20
+					+ Only one action when event loops
+						Bar 2 : Set StopAnim to 0
+						Bar 2 : Make invisible
+						 Bar 2 : Set scale to 1.0 (Quality = 0)
+						 Bar 2 : Set alpha-blending coefficient to 0
+
+				* Upon pressing "Enter"
+				+ SelectMenu of AlterableValues = 1
+				+ BattlePhase of AlterableValues = 0
+				+ FightMenu of FightButton = 1
+				+ Fighting of FightButton = 0
+				+ KeyboardLock of AlterableValues = 0
+				+ Only one action when event loops
+				  OR (logical)
+				* Upon pressing "Z"
+				+ SelectMenu of AlterableValues = 1
+				+ BattlePhase of AlterableValues = 0
+				+ FightMenu of FightButton = 1
+				+ Fighting of FightButton = 0
+				+ KeyboardLock of AlterableValues = 0
+				+ Only one action when event loops
+					Sound : Play sample snd_select
+					Main : Make invisible
+					FightSelect1 : Make invisible
+					Soul : Make invisible
+					AlterableValues : Set KeyboardLock to 1
+					AlterableValues : Set BattlePhase to 1
+					FightButton : Set Fighting to 1
+
+				// All weapons
+
+				// Toy knife (WeaponID = 0)
+
+				* SelectMenu of AlterableValues = 1
+				+ BattlePhase of AlterableValues = 1
+				+ FightMenu of FightButton = 1
+				+ Fighting of FightButton = 1
+				+ Hit of Bar = 0
+				+ WeaponID of AlterableValues = 0
+				+ Only one action when event loops
+					Bar : Reappear
+					 Easing Object : Move Bar using Linear Ease-In to [1813,Y( "Bar" )] over RRandom(1250, 2250) milliseconds
+					Active : Reappear
+
+				* Upon pressing "Enter"
+				+ SelectMenu of AlterableValues = 1
+				+ BattlePhase of AlterableValues = 1
+				+ FightMenu of FightButton = 1
+				+ Fighting of FightButton = 1
+				+ Hit of Bar = 0
+				+ KeyboardLock of AlterableValues = 0
+				+ WeaponID of AlterableValues = 0
+				+ Only one action when event loops
+				  OR (logical)
+				* Upon pressing "Z"
+				+ SelectMenu of AlterableValues = 1
+				+ BattlePhase of AlterableValues = 1
+				+ FightMenu of FightButton = 1
+				+ Fighting of FightButton = 1
+				+ Hit of Bar = 0
+				+ KeyboardLock of AlterableValues = 0
+				+ WeaponID of AlterableValues = 0
+				+ Only one action when event loops
+					Bar : Start animation
+					 Easing Object : Stop Bar
+					Sound : Play sample sword_attack
+					AlterableValues : Set KeyboardLock to 1
+					Weapon : Change animation sequence to ToyKnife
+					Weapon : Reappear
+					Weapon : Start animation
+					Bar : Set Hit to 1
+					 Opponent : Set Hit on
+
+				// Torn Notebook (WeaponID = 1)
+
+				* BattlePhase of AlterableValues = 1
+				+ Fighting of FightButton = 1
+				+ WeaponID of AlterableValues = 1
+				+ NotebookStep of Weapon = 0
+				+ Only one action when event loops
+					Weapon : Set NotebookStep to 1
+					Weapon : Set NotebookHitCount to 0
+					Bar : Set NotebookGap to RRandom(200, 600)
+					Bar : Set NotebookSpeed to RRandom(1250, 2250)
+					Bar : Reappear
+					Bar : Set X position to 1813
+					Bar : Set Hit to 0
+					 Easing Object : Move Bar using Linear Ease-In to [105,Y( "Bar" )] over NotebookSpeed( "Bar" ) milliseconds
+					Bar 2 : Reappear
+					Bar 2 : Set X position to 1813 + NotebookGap( "Bar" )
+					Bar 2 : Set Y position to Y( "Bar" )
+					Bar 2 : Set Hit to 0
+					 Easing Object : Move Bar 2 using Linear Ease-In to [105,Y( "Bar" )] over NotebookSpeed( "Bar" ) + NotebookGap( "Bar" ) milliseconds
+					Active : Reappear
+
+				* Upon pressing "Enter"
+				+ BattlePhase of AlterableValues = 1
+				+ Fighting of FightButton = 1
+				+ Hit of Bar = 0
+				+ KeyboardLock of AlterableValues = 0
+				+ WeaponID of AlterableValues = 1
+				+ NotebookStep of Weapon = 1
+				+ Only one action when event loops
+				  OR (logical)
+				* Upon pressing "Z"
+				+ BattlePhase of AlterableValues = 1
+				+ Fighting of FightButton = 1
+				+ Hit of Bar = 0
+				+ KeyboardLock of AlterableValues = 0
+				+ WeaponID of AlterableValues = 1
+				+ NotebookStep of Weapon = 1
+				+ Only one action when event loops
+					 Easing Object : Stop Bar
+					Sound : Play sample snd_hit
+					Bar : Start animation
+					Bar : Set Hit to 1
+					Bar : Set StopAnim to 1
+					Bar : Set StopTimer to 0
+					 Bar : Set scale to 1.0 (Quality = 0)
+					 Bar : Set alpha-blending coefficient to 0
+					Weapon : Set NotebookScore1 to Abs(X( "Bar" )) - ( 1813 - 105 ) / 2
+					Weapon : Set NotebookStep to 2
+					AlterableValues : Set KeyboardLock to 1
+
+				* Upon pressing "Enter"
+				+ BattlePhase of AlterableValues = 1
+				+ Fighting of FightButton = 1
+				+ Hit of Bar 2 = 0
+				+ KeyboardLock of AlterableValues = 0
+				+ WeaponID of AlterableValues = 1
+				+ NotebookStep of Weapon = 2
+				+ Only one action when event loops
+				  OR (logical)
+				* BattlePhase of AlterableValues = 1
+				+ Upon pressing "Z"
+				+ Fighting of FightButton = 1
+				+ Hit of Bar 2 = 0
+				+ KeyboardLock of AlterableValues = 0
+				+ WeaponID of AlterableValues = 1
+				+ NotebookStep of Weapon = 2
+				+ Only one action when event loops
+					 Easing Object : Stop Bar 2
+					Sound : Play sample snd_hit
+					Sound : Play sample notebookhit (3)
+					Bar 2 : Start animation
+					Bar 2 : Set Hit to 1
+					Bar 2 : Set StopAnim to 1
+					Bar 2 : Set StopTimer to 0
+					 Bar 2 : Set scale to 1.0 (Quality = 0)
+					 Bar 2 : Set alpha-blending coefficient to 0
+					Weapon : Set NotebookScore2 to Abs(X( "Bar 2" )) - ( 1813 - 105 ) / 2
+					Weapon : Set NotebookStep to 3
+					AlterableValues : Set KeyboardLock to 1
+					Weapon : Change animation sequence to TornNotebook
+					Weapon : Force animation frame to 0
+					Weapon : Reappear
+					Weapon : Set NotebookAnim to 1
+					Weapon : Set NotebookScale to 100
+					 Weapon : Set X scale to 1.0 (Quality = 0)
+
+				* NotebookAnim of Weapon = 1
+				  OR (logical)
+				* NotebookAnim of Weapon = 3
+					Weapon : Sub 13 from NotebookScale
+					 Weapon : Set X scale to NotebookScale( "Weapon" ) / 100.0 (Quality = 0)
+
+				* NotebookAnim of Weapon = 1
+				+ NotebookScale of Weapon <= 0
+				+ Only one action when event loops
+					Weapon : Set NotebookAnim to 2
+					Weapon : Set NotebookScale to 0
+					Weapon : Force animation frame to 1
+
+				* NotebookAnim of Weapon = 2
+				  OR (logical)
+				* NotebookAnim of Weapon = 4
+					Weapon : Add 13 to NotebookScale
+					 Weapon : Set X scale to NotebookScale( "Weapon" ) / 100.0 (Quality = 0)
+
+				* NotebookAnim of Weapon = 2
+				+ NotebookScale of Weapon >= 100
+				+ Only one action when event loops
+					 Weapon : Set X scale to 1.0 (Quality = 0)
+					Weapon : Set NotebookAnim to 3
+
+				* NotebookAnim of Weapon = 3
+				+ NotebookScale of Weapon <= 0
+				+ Only one action when event loops
+					Weapon : Set NotebookAnim to 4
+					Weapon : Set NotebookScale to 0
+					Weapon : Force animation frame to 0
+
+				* NotebookAnim of Weapon = 4
+				+ NotebookScale of Weapon >= 100
+				+ Only one action when event loops
+					Weapon : Set NotebookAnim to 0
+					Weapon : Make invisible
+					 Active 2 : Set scale to 1.0 (Quality = 0)
+					 Active 2 : Set alpha-blending coefficient to 0
+					Active 2 : Reappear
+					Active 2 : Start animation
+					Active 2 : Set ImpactAnim to 1
+					Active 2 : Set ImpactTimer to 0
+
+				* ImpactAnim of Active 2 = 1
+					Active 2 : Add 1 to ImpactTimer
+					 Active 2 : Set alpha-blending coefficient to ( ImpactTimer( "Active 2" ) / 17.5 ) * 255
+					 Active 2 : Set scale to 1.0 + ( ImpactTimer( "Active 2" ) / 17.5 ) * 4 (Quality = 0)
+
+				* ImpactAnim of Active 2 = 1
+				+ Only one action when event loops
+					Sound : Play sample snd_punchstrong
+
+				* ImpactAnim of Active 2 = 1
+				+ ImpactTimer of Active 2 >= 20
+				+ Only one action when event loops
+					 Active 2 : Set scale to 5.0 (Quality = 0)
+					 Active 2 : Set alpha-blending coefficient to 255
+					Active 2 : Set ImpactAnim to 0
+					Active 2 : Make invisible
+					Sound : Play sample monster_damage_hit
+					 Opponent : Set Hit on
+
+				* Hit of Bar = 1
+				+ StopAnim of Bar = 1
+				+ Only one action when event loops
+					Weapon : Set NotebookScore1 to Abs(X( "Bar" ) - 959)
+
+				* Hit of Bar = 1
+				+ StopAnim of Bar = 2
+				+ Only one action when event loops
+					Weapon : Set NotebookScore2 to Abs(X( "Bar" ) - 959)
+
+			[ MercySelect ]
+
+				* Upon pressing "Enter"
+				+ SelectMenu of AlterableValues = 4
+				+ MercyMenu of MercyButton = 1
+				+ Selected of MercyButton = 1
+
+				* Upon pressing "Enter"
+				+ SelectMenu of AlterableValues = 4
+				+ MercyMenu of MercyButton = 1
+				+ Selected of MercyButton = 2
+
+				* Upon pressing "Down Arrow"
+				+ SelectMenu of AlterableValues = 4
+				+ MercyMenu of MercyButton = 1
+				+ Selected of MercyButton = 1
+				+ KeyboardLock of AlterableValues = 0
+				+ Only one action when event loops
+				  OR (logical)
+				* Upon pressing "Up Arrow"
+				+ SelectMenu of AlterableValues = 4
+				+ MercyMenu of MercyButton = 1
+				+ Selected of MercyButton = 1
+				+ KeyboardLock of AlterableValues = 0
+				+ Only one action when event loops
+					Sound : Play sample menu_select
+					MercyButton : Set Selected to 2
+					AlterableValues : Set KeyboardLock to 1
+					Soul : Set X position to X( "FightSelect2" ) - 50
+					Soul : Set Y position to Y( "FightSelect2" ) + OHeight( "FightSelect2" ) / 2
+
+				* Upon pressing "Down Arrow"
+				+ SelectMenu of AlterableValues = 4
+				+ MercyMenu of MercyButton = 1
+				+ Selected of MercyButton = 2
+				+ KeyboardLock of AlterableValues = 0
+				+ Only one action when event loops
+				  OR (logical)
+				* Upon pressing "Up Arrow"
+				+ SelectMenu of AlterableValues = 4
+				+ MercyMenu of MercyButton = 1
+				+ Selected of MercyButton = 2
+				+ KeyboardLock of AlterableValues = 0
+				+ Only one action when event loops
+					Sound : Play sample menu_select
+					MercyButton : Set Selected to 1
+					AlterableValues : Set KeyboardLock to 1
+					Soul : Set X position to X( "FightSelect1" ) - 50
+					Soul : Set Y position to Y( "FightSelect1" ) + OHeight( "FightSelect1" ) / 2
+
+			* Upon pressing "Enter"
+			+ SelectMenu of AlterableValues = 1
+			+ FightMenu of FightButton = 0
+			+ Fighting of FightButton = 0
+			+ KeyboardLock of AlterableValues = 0
+			+ BattlePhase of AlterableValues = 0
+			+ Only one action when event loops
+			  OR (logical)
+			* Upon pressing "Z"
+			+ SelectMenu of AlterableValues = 1
+			+ FightMenu of FightButton = 0
+			+ Fighting of FightButton = 0
+			+ KeyboardLock of AlterableValues = 0
+			+ BattlePhase of AlterableValues = 0
+			+ Only one action when event loops
+				Main : Set alterable string to ""
+				AlterableValues : Set TypeIndex to 0
+				AlterableValues : Set Typing to 0
+				 JSON Object : Go to Root
+				 JSON Object : Enter Object named ("enemies")
+				 JSON Object : Enter Object named ("sans")
+				FightSelect1 : Set alterable string to "* " + ObjSubStringValue$( "JSON Object", "displayName" )
+				FightSelect1 : Reappear
+				FightButton : Set FightMenu to 1
+				Sound : Play sample snd_select
+				Soul : Set X position to X( "FightSelect1" ) - 50
+				Soul : Set Y position to Y( "FightSelect1" ) + OHeight( "FightSelect1" ) / 2
+				AlterableValues : Set KeyboardLock to 1
+				ActButton : Set ActMenu to 0
+				MercyButton : Set MercyMenu to 0
+				ItemButton : Set ItemMenu to 0
+
+			* Upon pressing "Enter"
+			+ SelectMenu of AlterableValues = 4
+			+ MercyMenu of MercyButton = 0
+			+ Selected of MercyButton = 0
+			+ KeyboardLock of AlterableValues = 0
+			+ Only one action when event loops
+			  OR (logical)
+			* Upon pressing "Z"
+			+ SelectMenu of AlterableValues = 4
+			+ MercyMenu of MercyButton = 0
+			+ Selected of MercyButton = 0
+			+ KeyboardLock of AlterableValues = 0
+			+ Only one action when event loops
+				Sound : Play sample snd_select
+				Main : Set alterable string to ""
+				AlterableValues : Set TypeIndex to 0
+				AlterableValues : Set Typing to 0
+				FightSelect1 : Reappear
+				MercyButton : Set MercyMenu to 1
+				FightButton : Set FightMenu to 0
+				ActButton : Set ActMenu to 0
+				ItemButton : Set ItemMenu to 0
+				FightSelect1 : Set alterable string to "* Spare"
+				FightSelect2 : Reappear
+				FightSelect2 : Set alterable string to "* Flee"
+				MercyButton : Set Selected to 1
+				AlterableValues : Set KeyboardLock to 1
+				Soul : Set X position to X( "FightSelect1" ) - 50
+				Soul : Set Y position to Y( "FightSelect1" ) + OHeight( "FightSelect1" ) / 2
+
+			* Upon pressing "Shift"
+			+ SelectMenu of AlterableValues = 1
+			+ FightMenu of FightButton = 1
+			+ Fighting of FightButton = 0
+			+ KeyboardLock of AlterableValues = 0
+			+ Only one action when event loops
+			  OR (logical)
+			* Upon pressing "Backspace"
+			+ SelectMenu of AlterableValues = 1
+			+ FightMenu of FightButton = 1
+			+ Fighting of FightButton = 0
+			+ KeyboardLock of AlterableValues = 0
+			+ Only one action when event loops
+				FightButton : Set FightMenu to 0
+				FightButton : Set Fighting to 0
+				FightSelect1 : Make invisible
+				FightSelect2 : Make invisible
+				Main : Reappear
+				Main : Set alterable string to ""
+				Soul : Set X position to 125
+				Soul : Set Y position to 993
+				AlterableValues : Set TypeIndex to 0
+				AlterableValues : Set Typing to 1
+				AlterableValues : Set KeyboardLock to 1
+
+			* Upon pressing "Shift"
+			+ SelectMenu of AlterableValues = 4
+			+ MercyMenu of MercyButton = 1
+			+ KeyboardLock of AlterableValues = 0
+			+ Only one action when event loops
+			  OR (logical)
+			* Upon pressing "Backspace"
+			+ SelectMenu of AlterableValues = 4
+			+ MercyMenu of MercyButton = 1
+			+ KeyboardLock of AlterableValues = 0
+			+ Only one action when event loops
+				MercyButton : Set MercyMenu to 0
+				MercyButton : Set Selected to 0
+				FightSelect1 : Make invisible
+				FightSelect2 : Make invisible
+				Main : Reappear
+				Main : Set alterable string to ""
+				Soul : Set X position to 1560
+				Soul : Set Y position to 993
+				AlterableValues : Set TypeIndex to 0
+				AlterableValues : Set Typing to 1
+				AlterableValues : Set KeyboardLock to 1
+
+		[ SpriteOnHitAnim ]
+
+			// When a sprite is hit, it does a little left and right animation of impact.
+
+			* Opponent: Hit is on
+				Opponent : Add 1 to HitAnimTimer
+
+			* Opponent: Hit is on
+			+ HitAnimTimer of Opponent = 0
+				Opponent : Set X position to BaseX( "Opponent" ) + 16
+
+			* Opponent: Hit is on
+			+ HitAnimTimer of Opponent = 4
+				Opponent : Set X position to BaseX( "Opponent" ) - 16
+
+			* Opponent: Hit is on
+			+ HitAnimTimer of Opponent = 8
+				Opponent : Set X position to BaseX( "Opponent" ) + 16
+
+			* Opponent: Hit is on
+			+ HitAnimTimer of Opponent = 12
+				Opponent : Set X position to BaseX( "Opponent" ) - 16
+
+			* Opponent: Hit is on
+			+ HitAnimTimer of Opponent = 16
+				Opponent : Set X position to BaseX( "Opponent" ) + 12
+
+			* Opponent: Hit is on
+			+ HitAnimTimer of Opponent = 22
+				Opponent : Set X position to BaseX( "Opponent" ) - 12
+
+			* Opponent: Hit is on
+			+ HitAnimTimer of Opponent = 28
+				Opponent : Set X position to BaseX( "Opponent" ) + 8
+
+			* Opponent: Hit is on
+			+ HitAnimTimer of Opponent = 34
+				Opponent : Set X position to BaseX( "Opponent" ) - 8
+
+			* Opponent: Hit is on
+			+ HitAnimTimer of Opponent = 40
+				Opponent : Set X position to BaseX( "Opponent" ) + 8
+
+			* Opponent: Hit is on
+			+ HitAnimTimer of Opponent = 46
+				Opponent : Set X position to BaseX( "Opponent" ) - 8
+
+			* Opponent: Hit is on
+			+ HitAnimTimer of Opponent = 52
+				Opponent : Set X position to BaseX( "Opponent" )
+				 Opponent : Set Hit off
+				Opponent : Set HitAnimTimer to 0
+				 Active : Set AttackFinish on
+
+			* Opponent: Hit is on
+
+	[ OpponentTurn ]
+
+		[ MenuNavigate (2) ]
+
+			* Upon pressing "Left Arrow"
+			+ SelectMenu of AlterableValues <> 1
+			+ BattlePhase of AlterableValues = 10
+			+ FightMenu of FightButton <> 1
+			+ ActMenu of ActButton <> 1
+			+ ItemMenu of ItemButton <> 1
+			+ MercyMenu of MercyButton <> 1
+				AlterableValues : Sub 1 from SelectMenu
+				Sound : Play sample menu_select
+
+			* Upon pressing "Right Arrow"
+			+ SelectMenu of AlterableValues <> 4
+			+ BattlePhase of AlterableValues = 10
+			+ FightMenu of FightButton <> 1
+			+ ActMenu of ActButton <> 1
+			+ ItemMenu of ItemButton <> 1
+			+ MercyMenu of MercyButton <> 1
+				AlterableValues : Add 1 to SelectMenu
+				Sound : Play sample menu_select
+
+			* SelectMenu of AlterableValues = 0
+			+ BattlePhase of AlterableValues = 10
+			+ FightMenu of FightButton = 0
+			+ Only one action when event loops
+				ItemButton : Force animation frame to 0
+				MercyButton : Force animation frame to 0
+				ActButton : Force animation frame to 0
+				FightButton : Force animation frame to 0
+
+			* SelectMenu of AlterableValues = 1
+			+ BattlePhase of AlterableValues = 10
+			+ FightMenu of FightButton = 0
+			+ Only one action when event loops
+				MercyButton : Force animation frame to 0
+				ActButton : Force animation frame to 0
+				ItemButton : Force animation frame to 0
+				FightButton : Force animation frame to 1
+				Soul : Set X position to 125
+
+			* SelectMenu of AlterableValues = 2
+			+ BattlePhase of AlterableValues = 10
+			+ FightMenu of FightButton = 0
+			+ Only one action when event loops
+				MercyButton : Force animation frame to 0
+				ItemButton : Force animation frame to 0
+				FightButton : Force animation frame to 0
+				ActButton : Force animation frame to 1
+				Soul : Set X position to 610
+
+			* SelectMenu of AlterableValues = 3
+			+ BattlePhase of AlterableValues = 10
+			+ FightMenu of FightButton = 0
+			+ Only one action when event loops
+				MercyButton : Force animation frame to 0
+				ActButton : Force animation frame to 0
+				FightButton : Force animation frame to 0
+				ItemButton : Force animation frame to 1
+				Soul : Set X position to 1083
+
+			* SelectMenu of AlterableValues = 4
+			+ BattlePhase of AlterableValues = 10
+			+ FightMenu of FightButton = 0
+			+ Only one action when event loops
+				ActButton : Force animation frame to 0
+				ItemButton : Force animation frame to 0
+				FightButton : Force animation frame to 0
+				MercyButton : Force animation frame to 1
+				Soul : Set X position to 1560
+
+		// * AlterableValues: MyTurn is off
+			//  JSON Object : Go to Root
+			//  JSON Object : Enter Object named ("enemies")
+			//  JSON Object : Enter Object named ("sans")
+			//  JSON Object : Loop ("idkchangethis") through all sub-objects
+
+* Active: AttackFinish is off
++ Only one action when event loops
+	Active : Make invisible
+	 Active : Set alpha-blending coefficient to 0
+	 Active : Set X scale to 1.0 (Quality = 0)
+
+* Active: AttackFinish is on
+	 Active : Set alpha-blending coefficient to AlphaCoef( "Active" ) + 8
+	 Active : Set X scale to XScale( "Active" ) - 0.025 (Quality = 0)
+
+* Active: AttackFinish is on
++ X scale of Opponent = 0.5
+  OR (logical)
+* Active: AttackFinish is on
++ Opponent: AlphaCoef( "Active" ) >= 255
+	 Active : Set AttackFinish off
+	 AlterableValues : Set MyTurn off
+	AlterableValues : Set BattlePhase to 10
+	FightButton : Set FightMenu to 0
+	FightButton : Set Fighting to 0
+	ActButton : Set ActMenu to 0
+	ActButton : Set ActMenuSelected to 0
+	ItemButton : Set ItemMenu to 0
+	ItemButton : Set ItemSelected to 0
+	MercyButton : Set MercyMenu to 0
+	MercyButton : Set Selected to 0
+	FightSelect1 : Make invisible
+	FightSelect2 : Make invisible
+	FightSelect3 : Make invisible
+	FightSelect4 : Make invisible
+	FightSelect5 : Make invisible
+	FightSelect6 : Make invisible
+	Main : Set alterable string to "* " + ObjSubStringValue$( "JSON Object", "displayName" ) + " is choosing an attack."
+	 AlterableValues : Set MainText to "* " + ObjSubStringValue$( "JSON Object", "displayName" ) + " is choosing an attack."
+	AlterableValues : Set TypeIndex to 0
+	AlterableValues : Set Typing to 1
+	Main : Reappear
+	Soul : Reappear
+	Soul : Set X position to 125
+	Soul : Set Y position to 993
+	AlterableValues : Set SelectMenu to 1
+

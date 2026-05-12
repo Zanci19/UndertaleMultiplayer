@@ -1,0 +1,50 @@
++ Object Definitions
+	+ StringPlay
+		- Type: String
+		+ Texts
+			1: Play
+	+ StringSettings
+		- Type: String
+		+ Texts
+			1: Settings
+	+ StringStatsName
+		- Type: String
+		+ Texts
+			1: Name__Self()
+	+ StringStatsLV
+		- Type: String
+		+ Texts
+			1: LV XX
+	+ StringStatsPlaytime
+		- Type: String
+		+ Texts
+			1: HOURS:MINUTES
+	+ StringStatsConnection
+		- Type: String
+		+ Texts
+			1: Connection: STATUS
+	+ StringQuit
+		- Type: String
+		+ Texts
+			1: Quit
+	+ Lacewing Blue Client
+		- Type: Lacewing Blue Client
+	+ Active 2
+		- Type: Active
+		- Images hash: 0xEDDA
+		+ Alterable Values
+			SelectedOption: 1
+			Alterable Value B: 0
+		+ Alterable Flags
+			WasOnPlayButton: 0
+			KeyboardLock: 0
++ Layer #2
+	- StringPlay [576, 512]
+	- StringStatsName [224, 288]
+	- StringStatsConnection [224, 384]
+	- StringStatsLV [655, 288]
+	- StringStatsPlaytime [1088, 288]
+	- StringSettings [802, 608]
+	- StringQuit [1024, 512]
+	- Lacewing Blue Client [0, -32]
+	- Active 2 [47, -17]

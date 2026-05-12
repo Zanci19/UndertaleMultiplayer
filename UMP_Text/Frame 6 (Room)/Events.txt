@@ -1,0 +1,84 @@
+[ PlayerJoinLeave ]
+
+	* Start of Frame
+		String : Set alterable string to Self_Name$( "Lacewing Blue Client" ) + " " + Channel_Name$( "Lacewing Blue Client" )
+		Special : Set MyPeerID to Self_ID( "Lacewing Blue Client" )
+		 New Objects : Create Player at X=320, Y=240, Layer=1
+		Player : Set Alterable Value A to Self_ID( "Lacewing Blue Client" )
+		 Lacewing Blue Client : Loop peers on channel
+
+	* Lacewing Blue Client : On channel peer loop
+		 New Objects : Create NetPlayer at X=320, Y=240, Layer=1
+		NetPlayer : Set PeerID to Peer_ID( "Lacewing Blue Client" )
+
+	* Lacewing Blue Client : On peer connect
+		 New Objects : Create NetPlayer at X=320, Y=240, Layer=1
+		NetPlayer : Set PeerID to Peer_ID( "Lacewing Blue Client" )
+
+	* Lacewing Blue Client : On peer disconnect
+	+ PeerID( "NetPlayer" ) = Peer_ID( "Lacewing Blue Client" )
+		NetPlayer : Destroy
+
+	* Always
+		 Lacewing Blue Client : Add short X( "Player" )
+		 Lacewing Blue Client : Add short Y( "Player" )
+		 Lacewing Blue Client : Blast binary to channel on subchannel 0
+
+	* Lacewing Blue Client : On binary message from channel on subchannel 0 (blasted)
+	+ PeerID( "NetPlayer" ) = Peer_ID( "Lacewing Blue Client" )
+		NetPlayer : Set X position to SignedShort( "Lacewing Blue Client", 0 )
+		NetPlayer : Set Y position to SignedShort( "Lacewing Blue Client", 2 )
+
+* Repeat while "Left Arrow" is pressed
++ Alterable Value A of Player = Self_ID( "Lacewing Blue Client" )
+	Player : Set X position to X( "Player" ) - 3
+
+* Repeat while "Right Arrow" is pressed
++ Alterable Value A of Player = Self_ID( "Lacewing Blue Client" )
+	Player : Set X position to X( "Player" ) + 3
+
+* Repeat while "Up Arrow" is pressed
++ Alterable Value A of Player = Self_ID( "Lacewing Blue Client" )
+	Player : Set Y position to Y( "Player" ) - 3
+
+* Repeat while "Down Arrow" is pressed
++ Alterable Value A of Player = Self_ID( "Lacewing Blue Client" )
+	Player : Set Y position to Y( "Player" ) + 3
+
+[ Challenge ]
+
+	* Upon pressing "Z"
+	+ ( ( X( "Player" ) - X( "NetPlayer" ) ) * ( X( "Player" ) - X( "NetPlayer" ) ) + ( Y( "Player" ) - Y( "NetPlayer" ) ) * ( Y( "Player" ) - Y( "NetPlayer" ) ) ) <= 10000
+	+ MyRole = ""
+		Special : Set OpponentPeerID to PeerID( "NetPlayer" )
+		Special : Set IsHost to 1
+		Special : Set MyRole to "challenger"
+		Special : Set MatchID to MyPeerID * 100000 + OpponentPeerID
+		 Lacewing Blue Client : Send text "CHALLENGE|" + Str$(MatchID) + "|" + MyName + "|" + MyCharacter to peer on subchannel 1
+
+	* Lacewing Blue Client : On text message from peer on subchannel 1 (sent)
+	+ MyRole = ""
+		Special : Set OpponentPeerID to Peer_ID( "Lacewing Blue Client" )
+		Special : Set IsHost to 0
+		Special : Set MyRole to "challenged"
+		String : Set alterable string to "Challenge received! Z to accept, X to deny"
+
+	* Upon pressing "Z"
+	+ MyRole = "challenged"
+		 Lacewing Blue Client : Send text "ACCEPT|" + Str$(MatchID) + "|" + MyName + "|" + MyCharacter to peer on subchannel 2
+		storyboard controls : Jump to frame "Fight" (7)
+
+	* Lacewing Blue Client : On text message from peer on subchannel 2 (sent)
+	+ MyRole = "challenger"
+		storyboard controls : Jump to frame "Fight" (7)
+
+	* Upon pressing "X"
+	+ MyRole = "challenged"
+		 Lacewing Blue Client : Send text "DENY" to peer on subchannel 3
+		Special : Set MyRole to ""
+
+	* Lacewing Blue Client : On text message from peer on subchannel 3 (sent)
+	+ MyRole = "challenger"
+		String : Set alterable string to "Challenge denied."
+		Special : Set MyRole to ""
+

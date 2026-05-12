@@ -1,0 +1,68 @@
+* Start of Frame
++ IsFullscreen = 1
+	StringFullscreen : Set alterable string to "Fullscreen: ON"
+
+* Upon pressing "Down Arrow"
++ HighlightOption of Active < 6
+	Active : Add 1 to HighlightOption
+
+* Upon pressing "Up Arrow"
++ HighlightOption of Active > 1
+	Active : Sub 1 from HighlightOption
+
+* HighlightOption of Active = 1
+	StringFullscreen : Set Color of RGB(255,255,0)
+	StringMusic : Set Color of RGB(255,255,255)
+	StringSFX : Set Color of RGB(255,255,255)
+	StringIntroSFX : Set Color of RGB(255,255,255)
+	StringResetName : Set Color of RGB(255,255,255)
+	StringTrueReset : Set Color of RGB(255,255,255)
+
+* HighlightOption of Active = 2
+	StringMusic : Set Color of RGB(255,255,0)
+	StringTrueReset : Set Color of RGB(255,255,255)
+	StringIntroSFX : Set Color of RGB(255,255,255)
+	StringSFX : Set Color of RGB(255,255,255)
+	StringResetName : Set Color of RGB(255,255,255)
+	StringFullscreen : Set Color of RGB(255,255,255)
+
+* HighlightOption of Active = 3
+	StringSFX : Set Color of RGB(255,255,0)
+	StringTrueReset : Set Color of RGB(255,255,255)
+	StringIntroSFX : Set Color of RGB(255,255,255)
+	StringResetName : Set Color of RGB(255,255,255)
+	StringMusic : Set Color of RGB(255,255,255)
+	StringFullscreen : Set Color of RGB(255,255,255)
+
+* HighlightOption of Active = 4
+	StringIntroSFX : Set Color of RGB(255,255,0)
+	StringTrueReset : Set Color of RGB(255,255,255)
+	StringResetName : Set Color of RGB(255,255,255)
+	StringMusic : Set Color of RGB(255,255,255)
+	StringSFX : Set Color of RGB(255,255,255)
+	StringFullscreen : Set Color of RGB(255,255,255)
+
+* HighlightOption of Active = 5
+	StringResetName : Set Color of RGB(255,255,0)
+	StringTrueReset : Set Color of RGB(255,255,255)
+	StringMusic : Set Color of RGB(255,255,255)
+	StringSFX : Set Color of RGB(255,255,255)
+	StringIntroSFX : Set Color of RGB(255,255,255)
+	StringFullscreen : Set Color of RGB(255,255,255)
+
+* HighlightOption of Active = 6
+	StringTrueReset : Set Color of RGB(255,255,0)
+	StringSFX : Set Color of RGB(255,255,255)
+	StringIntroSFX : Set Color of RGB(255,255,255)
+	StringResetName : Set Color of RGB(255,255,255)
+	StringMusic : Set Color of RGB(255,255,255)
+	StringFullscreen : Set Color of RGB(255,255,255)
+
+[ OptionSelect ]
+
+	* Upon pressing "Z"
+	+ HighlightOption of Active = 1
+	  OR (logical)
+	* Upon pressing "Enter"
+	+ HighlightOption of Active = 1
+

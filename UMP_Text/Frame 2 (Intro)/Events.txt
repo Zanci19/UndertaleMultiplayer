@@ -1,0 +1,36 @@
+* Start of Frame
+	 the timer : Fire event "ShowLogo" after 01''-00
+
+* On timer event "ShowLogo"
+	 Sound : Play sample mus_intronoise on channel #3
+	logo : Reappear
+
+* mus_intronoise is not playing
++ logo is visible
++ Untitled 2 is invisible
+	Untitled 2 : Reappear
+	 Untitled 2 : Set alpha-blending coefficient to 0
+	 Untitled 2 : Set IsInvisibleAlphaCoef on
+
+[ Blinking ]
+
+	* Untitled 2 is visible
+	+ logo: AlphaCoef( "Untitled 2" ) <= 0
+		 Untitled 2 : Set IsInvisibleAlphaCoef on
+
+	* Untitled 2 is visible
+	+ logo: AlphaCoef( "Untitled 2" ) >= 255
+		 Untitled 2 : Set IsInvisibleAlphaCoef off
+
+	* Untitled 2 is visible
+	+ Untitled 2: IsInvisibleAlphaCoef is on
+		 Untitled 2 : Set alpha-blending coefficient to AlphaCoef( "Untitled 2" ) + 5
+
+	* Untitled 2 is visible
+	+ Untitled 2: IsInvisibleAlphaCoef is off
+		 Untitled 2 : Set alpha-blending coefficient to AlphaCoef( "Untitled 2" ) - 5
+
+* Upon pressing "Enter"
+  OR (logical)
+* Upon pressing "Z"
+

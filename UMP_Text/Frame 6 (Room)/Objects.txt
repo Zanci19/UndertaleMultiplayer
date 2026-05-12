@@ -1,0 +1,26 @@
++ Object Definitions
+	+ Lacewing Blue Client
+		- Type: Lacewing Blue Client
+	+ Player
+		- Type: Active
+		- Images hash: 0xEDDA
+		+ Alterable Values
+			Alterable Value A: 0
+	+ NetPlayer
+		- Type: Active
+		- Images hash: 0x9AA1
+		+ Alterable Values
+			PeerID: 0
+			Name: 0
+			Character: 0
+		+ Alterable Flags
+			Busy: 0
+	+ String
+		- Type: String
+		+ Texts
+			1: text
++ Layer #1
+	- Lacewing Blue Client [-128, 224]
+	- Player [47, 1039]
+	- NetPlayer [47, 1007]
+	- String [32, 256]

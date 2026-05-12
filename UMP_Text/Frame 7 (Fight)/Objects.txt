@@ -1,0 +1,239 @@
++ Object Definitions
+	+ ItemButton
+		- Type: Active
+		- Images hash: 0x801A
+		+ Alterable Values
+			ItemMenu: 0
+			ItemSelected: 0
+	+ MercyButton
+		- Type: Active
+		- Images hash: 0xC675
+		+ Alterable Values
+			MercyMenu: 0
+			Selected: 0
+	+ ActButton
+		- Type: Active
+		- Images hash: 0x9007
+		+ Alterable Values
+			ActMenu: 0
+			ActMenu2: 0
+			ActMenuSelected: 0
+			ActOptionSelected: 0
+			ActTextPassed: 0
+			ActBugFix: 0
+	+ FightButton
+		- Type: Active
+		- Images hash: 0x9D61
+		+ Alterable Values
+			FightMenu: 0
+			Fighting: 0
+	+ AlterableValues
+		- Type: Active
+		- Images hash: 0xEDDA
+		+ Alterable Values
+			SelectMenu: 0
+			FightBegin: 0
+			KeyboardLock: 0
+			Typing: 0
+			TypeIndex: 0
+			WeaponID: 1
+			BattlePhase: 0
+			AttackMenuLoaded: 0
+			AttackCount: 0
+			AttackSelectIndex: 0
+			ChosenAttackIndex: 0
+			PatternTimer: 0
+			CurrentAttackDuration: 0
+			BoxTargetX: 0
+			BoxTargetY: 0
+			BoxTargetWidth: 0
+			BoxTargetHeight: 0
+			BoxResizeTimer: 0
+		+ Alterable Strings
+			MainText: 
+			AttackID1: 
+			AttackID2: 
+			AttackID3: 
+			AttackID4: 
+			AttackID5: 
+			AttackID6: 
+		+ Alterable Flags
+			MyTurn: 0
+			CanChooseAttack: 0
+			CanControlSoul: 0
+	+ Layer object
+		- Type: Layer object
+	+ Soul
+		- Type: Active
+		- Images hash: 0x8D00
+		+ Alterable Values
+			InvivilibityFrames: 0
+			Jump: 30
+			JumpChange: 2
+			Slam: 0
+			ScreenShake: 0
+	+ Easing Object
+		- Type: Easing Object
+	+ BoxBottom
+		- Type: Active
+		- Images hash: 0xA78D
+	+ BoxRight
+		- Type: Active
+		- Images hash: 0xD530
+	+ Font Embed Object
+		- Type: Font Embed Object
+	+ Main
+		- Type: String
+		+ Texts
+			1: * Text goes here
+	+ JSON Object
+		- Type: JSON Object
+	+ FightSelect1
+		- Type: String
+		+ Alterable Values
+			AttackID: 0
+			AttackIndex: 0
+		+ Texts
+			1: * ENEMY\n* ENEMY
+	+ Bar
+		- Type: Active
+		- Images hash: 0x9D5F
+		+ Alterable Values
+			Hit: 0
+			BarStep: 0
+			PerfectHits: 0
+			StopAnim: 0
+			NotebookSpeed: 0
+			NotebookGap: 0
+			StopTimer: 0
+	+ Active
+		- Type: Active
+		- Images hash: 0x405E
+		+ Alterable Flags
+			AttackFinish: 0
+	+ Weapon
+		- Type: Active
+		- Images hash: 0x8E78
+		+ Alterable Values
+			NotebookHitCount: 0
+			NotebookStep: 0
+			NotebookScore1: 0
+			NotebookScore2: 0
+			NotebookAnim: 0
+			NotebookScale: 0
+	+ FightSelect2
+		- Type: String
+		+ Alterable Values
+			AttackID: 0
+			AttackIndex: 0
+		+ Texts
+			1: * ENEMY\n* ENEMY
+	+ Active 2
+		- Type: Active
+		- Images hash: 0x1376
+		+ Alterable Values
+			ImpactAnim: 0
+			ImpactTimer: 0
+	+ Bar 2
+		- Type: Active
+		- Images hash: 0x9D5F
+		+ Alterable Values
+			Hit: 0
+			BarStep: 0
+			PerfectHits: 0
+			StopTimer: 0
+			NotebookSpeed: 0
+			NotebookGap: 0
+			StopAnim: 0
+	+ Bar 3
+		- Type: Active
+		- Images hash: 0xEC2A
+		+ Alterable Values
+			Hit: 0
+			BarStep: 0
+			PerfectHits: 0
+			Alterable Value D: 0
+			NotebookSpeed: 0
+			NotebookGap: 0
+	+ Bar 4
+		- Type: Active
+		- Images hash: 0xEC2A
+		+ Alterable Values
+			Hit: 0
+			BarStep: 0
+			PerfectHits: 0
+			Alterable Value D: 0
+			NotebookSpeed: 0
+			NotebookGap: 0
+	+ Opponent
+		- Type: Active
+		- Images hash: 0x8C13
+		+ Alterable Values
+			HitCount: 0
+			HitAnimTimer: -1
+			BaseX: 0
+		+ Alterable Strings
+			CurrentAttackID: 
+		+ Alterable Flags
+			Hit: 0
+	+ FightSelect3
+		- Type: String
+		+ Alterable Values
+			AttackID: 0
+			AttackIndex: 0
+		+ Texts
+			1: * ENEMY\n* ENEMY
+	+ FightSelect4
+		- Type: String
+		+ Alterable Values
+			AttackID: 0
+			AttackIndex: 0
+		+ Texts
+			1: * ENEMY\n* ENEMY
+	+ FightSelect5
+		- Type: String
+		+ Alterable Values
+			AttackID: 0
+			AttackIndex: 0
+		+ Texts
+			1: * ENEMY\n* ENEMY
+	+ FightSelect6
+		- Type: String
+		+ Alterable Values
+			AttackID: 0
+			AttackIndex: 0
+		+ Texts
+			1: * ENEMY\n* ENEMY
++ Layer #1
+	- Opponent [960, 436]
++ Layer #2
+	- Font Embed Object [96, -32]
+	- JSON Object [128, -32]
+	- Active [959, 709]
+	- Bar [-39, 709]
+	- Bar 2 [-103, 709]
+	- Bar 3 [-167, 709]
+	- Bar 4 [-231, 709]
+	- Weapon [960, 289]
++ Layer #3
+	- ItemButton [1200, 991]
+	- MercyButton [1680, 991]
+	- ActButton [720, 991]
+	- FightButton [240, 991]
+	- AlterableValues [15, -17]
+	- Layer object [32, -32]
+	- Easing Object [64, -32]
+	- BoxRight [77, 709]
+	- BoxBottom [959, 547]
+	- BoxBottom [959, 871]
+	- BoxRight [1842, 709]
+	- Main [128, 576]
+	- FightSelect1 [192, 576]
+	- FightSelect2 [192, 640]
+	- FightSelect3 [192, 704]
+	- FightSelect4 [992, 576]
+	- FightSelect5 [992, 640]
+	- FightSelect6 [992, 704]
+	- Active 2 [958, 267]
++ Layer #4
+	- Soul [960, 540]

@@ -1,0 +1,40 @@
+* Upon pressing "Enter"
++ Edit Box: Edittext$( "Edit Box" ) <> ""
+	 Lacewing Blue Client : Connect to "server1.dark-wire.com:6121"
+
+* Lacewing Blue Client : On connect
+	 Lacewing Blue Client : Set name to Edittext$( "Edit Box" )
+
+* Lacewing Blue Client : On name set
+	 Lacewing Blue Client : Join channel "UMP_1" (hidden: 0, close automatically: 0)
+	storyboard controls : Jump to frame "Room" (6)
+
+[ NameType ]
+
+	* Start of Frame
+		 the timer : Fire event "BlinkCaret" after 00''-50
+
+	* NOT Edit Box: have input focus
+		Edit Box : Set focus on
+
+	* Always
+		StringTextOutput : Set alterable string to Edittext$( "Edit Box" )
+		Caret : Set X position to X( "StringTextOutput" ) + ( Len(Edittext$( "Edit Box" )) * 17 ) / 2
+		Caret : Set Y position to Y( "StringTextOutput" ) + OHeight( "StringTextOutput" ) / 2
+
+	* On timer event "BlinkCaret"
+	+ Caret: IsCaretVisible is off
+		 the timer : Fire event "BlinkCaret" after 00''-50
+		 Caret : Set IsCaretVisible on
+
+	* On timer event "BlinkCaret"
+	+ Caret: IsCaretVisible is on
+		 the timer : Fire event "BlinkCaret" after 00''-50
+		 Caret : Set IsCaretVisible off
+
+	* Caret: IsCaretVisible is on
+		Caret : Make invisible
+
+	* Caret: IsCaretVisible is off
+		Caret : Reappear
+

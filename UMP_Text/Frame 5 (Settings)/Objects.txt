@@ -1,0 +1,43 @@
++ Object Definitions
+	+ StringFullscreen
+		- Type: String
+		+ Texts
+			1: Fullscreen: STATE
+	+ StringMusic
+		- Type: String
+		+ Texts
+			1: Music volume: XX%
+	+ StringSFX
+		- Type: String
+		+ Texts
+			1: SFX volume: XX%
+	+ StringResetName
+		- Type: String
+		+ Texts
+			1: Reset name
+	+ StringIntroSFX
+		- Type: String
+		+ Texts
+			1: Intro sound effect: STATE
+	+ StringTrueReset
+		- Type: String
+		+ Texts
+			1: True reset
+	+ Active
+		- Type: Active
+		- Images hash: 0xEDDA
+		+ Alterable Values
+			HighlightOption: 1
+	+ StringIntroSFX 2
+		- Type: String
+		+ Texts
+			1: V-Sync: ON
++ Layer #1
+	- StringFullscreen [128, 128]
+	- StringMusic [128, 224]
+	- StringSFX [128, 320]
+	- StringIntroSFX [128, 416]
+	- StringIntroSFX 2 [128, 512]
+	- StringTrueReset [128, 704]
+	- StringResetName [128, 608]
+	- Active [15, -17]

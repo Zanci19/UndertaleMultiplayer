@@ -1,0 +1,29 @@
++ Object Definitions
+	+ Lacewing Blue Client
+		- Type: Lacewing Blue Client
+	+ Edit Box
+		- Type: Edit Box
+	+ String
+		- Type: String
+		+ Texts
+			1: Set up a name you wish to go by.\nYou can always change it later in the Settings menu.
+	+ String 2
+		- Type: String
+		+ Texts
+			1: Type your username on the screen, then press Z or ENTER to proceed.
+	+ StringTextOutput
+		- Type: String
+		+ Texts
+			1: ABCXYZ
+	+ Caret
+		- Type: Active
+		- Images hash: 0x0004
+		+ Alterable Flags
+			IsCaretVisible: 0
++ Layer #1
+	- Lacewing Blue Client [0, -32]
+	- String [106, 256]
+	- StringTextOutput [785, 509]
+	- String 2 [400, 832]
+	- Caret [964, 540]
+	- Edit Box [0, 0]

@@ -1,0 +1,154 @@
+{
+  "enemies": {
+    "sans": {
+      "displayName": "Sans",
+
+      "act": {
+        "check": [
+          "The easiest enemy.",
+          "Can only deal one damage."
+        ]
+      },
+
+      "strength": {
+        "ATK": 1,
+        "DEF": 1
+      },
+
+      "encounterTexts": [
+        "Sans blocks your path.",
+        "Sans appears.",
+        "Sans is here."
+      ],
+
+      "battle": {
+        "defaultSoulMode": "red",
+
+        "selectableAttacks": {
+          "count": 2,
+
+          "0": {
+            "id": "test_box_bones",
+            "name": "Test Box Bones"
+          },
+
+          "1": {
+            "id": "small_box_bone_rain",
+            "name": "Small Box Bone Rain"
+          }
+        },
+
+        "attacks": {
+          "test_box_bones": {
+            "displayName": "Test Box Bones",
+            "durationFrames": 360,
+
+            "waves": {
+              "count": 5,
+
+              "0": {
+                "frame": 0,
+                "type": "boxResize",
+                "x": 960,
+                "y": 620,
+                "w": 565,
+                "h": 250,
+                "frames": 30
+              },
+
+              "1": {
+                "frame": 30,
+                "type": "soulSetup",
+                "mode": "red",
+                "x": 960,
+                "y": 620
+              },
+
+              "2": {
+                "frame": 60,
+                "type": "spawnBoneLine",
+                "side": "left",
+                "y": 650,
+                "speed": 9,
+                "height": 90,
+                "count": 8,
+                "gap": 70
+              },
+
+              "3": {
+                "frame": 150,
+                "type": "spawnBoneLine",
+                "side": "right",
+                "y": 590,
+                "speed": 9,
+                "height": 120,
+                "count": 8,
+                "gap": 70
+              },
+
+              "4": {
+                "frame": 330,
+                "type": "endAttack"
+              }
+            }
+          },
+
+          "small_box_bone_rain": {
+            "displayName": "Small Box Bone Rain",
+            "durationFrames": 420,
+
+            "waves": {
+              "count": 5,
+
+              "0": {
+                "frame": 0,
+                "type": "boxResize",
+                "x": 960,
+                "y": 620,
+                "w": 420,
+                "h": 220,
+                "frames": 25
+              },
+
+              "1": {
+                "frame": 25,
+                "type": "soulSetup",
+                "mode": "red",
+                "x": 960,
+                "y": 620
+              },
+
+              "2": {
+                "frame": 60,
+                "type": "spawnBoneRain",
+                "xMin": 770,
+                "xMax": 1150,
+                "y": 470,
+                "speedY": 8,
+                "height": 80,
+                "count": 10,
+                "gapFrames": 8
+              },
+
+              "3": {
+                "frame": 230,
+                "type": "spawnBoneLine",
+                "side": "left",
+                "y": 650,
+                "speed": 11,
+                "height": 100,
+                "count": 6,
+                "gap": 80
+              },
+
+              "4": {
+                "frame": 390,
+                "type": "endAttack"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

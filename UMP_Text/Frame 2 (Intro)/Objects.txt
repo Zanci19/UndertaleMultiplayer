@@ -1,0 +1,14 @@
++ Object Definitions
+	+ logo
+		- Type: Active
+		- Images hash: 0x50B6
+	+ Untitled 2
+		- Type: Active
+		- Images hash: 0x8958
+		+ Alterable Values
+			Opacity: 0
+		+ Alterable Flags
+			IsInvisibleAlphaCoef: 0
++ Layer #1
+	- logo [960, 540]
+	- Untitled 2 [960, 878]

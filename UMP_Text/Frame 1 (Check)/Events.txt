@@ -1,0 +1,43 @@
+* Start of Frame
+	 Get Object : Get URL "https://zanci19.github.io/UndertaleMultiplayer/data/enemy.json"
+
+* Get Object: On get complete
+	Special : Set EnemyJSON to Received$( "Get Object" )
+	storyboard controls : Jump to frame "Intro" (2)
+	 JSON Object : Load (Received$( "Get Object" )) with flags (0)
+	String : Make invisible
+	String 2 : Set alterable string to Received$( "Get Object" ) + Str$(ResponseCode( "Get Object" ))
+
+* On timer event "JumpToIntro"
+	 the timer : Fire event "JumpToIntro" after 01''-00
+
+// Testing
+
+* Start of Frame
+	storyboard controls : Full Screen Mode
+	Special : Set IsFullscreen to 1
+
+[ ErrorHandle ]
+
+	[ NoConnection ]
+
+		* NOT Internet Connection Operations : Is connected to the Internet?
+		+ Only one action when event loops
+			String : Set alterable string to "This game requires an internet connection in order to run." + NewLine$ + "Please check your network settings."
+			 String : Set font color to RGB(255,0,0)
+			String 3 : Reappear
+
+		* Upon pressing "Enter"
+		+ NOT Internet Connection Operations : Is connected to the Internet?
+		+ String 3: string$( "String 3" ) <> "Checked!"
+			String 3 : Set alterable string to "Checked!"
+			 the timer : Fire event "DisplayNoConnectionTip" after 01''-00
+			String : Set alterable string to "You are still not connected to the internet."
+
+		* On timer event "DisplayNoConnectionTip"
+			String 3 : Set alterable string to "When you are connected, press Z or ENTER."
+
+		* On timer event "DisplayNoConnectionTip"
+		+ Internet Connection Operations : Is connected to the Internet?
+			String 3 : Set alterable string to "You have connected to a network."
+
